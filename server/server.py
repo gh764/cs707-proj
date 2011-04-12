@@ -1,6 +1,6 @@
-from SimpleXMLRPCServer import SimpleXMLRPCServer
 import datetime, socket, random, array
 from database import database
+from xmlrpc.server import SimpleXMLRPCServer
 
 class DatabaseHandler:
 
@@ -11,12 +11,12 @@ class DatabaseHandler:
     def close(self):
         del self.__database
 
-    def register(self, uname, passwd):
-        return self.__database.register(uname, passwd)
+    def register(self, uid, passwd):
+        return self.__database.register(uid, passwd)
 
-    def login(self, uname, passwd):
-        print("login:(%s, %s)" % (uname, passwd))
-        return self.__database.login(uname, passwd)
+    def login(self, uid, passwd):
+        print("login:(%s, %s)" % (uid, passwd))
+        return self.__database.login(uid, passwd)
 
     def add_location(self, uid, name, longitude, latitude, radius, altitude=0):
         print("add-location:(%s, %d, %d, %d, %d)" % (name, longitude, latitude, radius, altitude))
@@ -41,7 +41,7 @@ def main():
         server.register_instance(data_handler)
         server.serve_forever()
     except KeyboardInterrupt:
-        print "Caught control-c, closing database connection"
+        print("Caught control-c, closing database connection")
         data_handler.close()
 
 
