@@ -2,14 +2,14 @@ import xmlrpc.client
 from datetime import datetime, timedelta, date
 from random_schedule_generator import scheduled_item, daily_schedule, \
      event_generator
+from server_task import server_task
 
 s = xmlrpc.client.ServerProxy("http://localhost:7500")
 
 # create new user. uid=last 7 dig of tel#.
 uid = 5178293
 passwd = 'passwd'
-if s.register(uid, passwd) != -1 or \
-   s.login(uid, passwd) != -1:
+if False and s.register(uid, passwd) != -1: 
 
     home = s.add_location(uid, "HOME", 170, 180, 50)
     campus = s.add_location(uid, 'CAMPUS', 130, 189, 150)
@@ -30,3 +30,6 @@ if s.register(uid, passwd) != -1 or \
     g.add_daily_schedule(0, monday_schedule)
     today = datetime.today()
     g.generate(s, uid, today + timedelta(days=-90), today)
+
+task = server_task()
+task.build_agg_snapshots('./database')
