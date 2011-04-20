@@ -1,0 +1,68 @@
+<TableLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:stretchColumns="1,3">
+    <TableRow>
+        <TextView
+        	android:text="Location"
+        	android:padding="3dip" />
+        <EditText
+        	android:id="@+id/LocationTextEntry"
+        	android:padding="3dip"
+        	android:layout_span="3"
+        	android:layout_width="fill_parent" />
+    </TableRow>
+    
+    <TableRow>
+        <TextView
+        	android:text="Latitude"
+        	android:padding="3dip" />
+        <EditText
+        	android:id="@+id/LatitudeTextEntry"
+        	android:enabled="false"
+        	android:padding="3dip" />
+        <TextView
+        	android:text="Longitude"
+        	android:padding="3dip" />
+        <EditText
+        	android:id="@+id/LongitudeTextEntry"
+        	android:enabled="false"
+        	android:padding="3dip" />
+    </TableRow>
+    
+    <TableRow>
+        <TextView
+        	android:text="Radius"
+        	android:padding="3dip" />
+        <EditText
+        	android:id="@+id/RadiusTextEntry"
+        	android:padding="3dip" />
+        <TextView
+        	android:text="Altitude"
+        	android:padding="3dip" />
+        <EditText
+        	android:id="@+id/AltitudeTextEntry"
+        	android:enabled="false"
+        	android:padding="3dip" />
+    </TableRow>
+    
+    <TableRow>
+        <CheckBox
+        	android:text="          Monitored?"
+        	android:id="@+id/MonitoredCheckBox"
+        	android:padding="3dip"
+        	android:layout_span="2" />
+    </TableRow>
+    
+    <TableRow>    		
+    		<Button android:text="Close"
+    	   		android:id="@+id/CloseLocationBtn" />
+    		<Button android:text="Reset"
+    	    	android:id="@+id/ResetLocationBtn" />
+        	<Button android:text="Locate"
+    	    	android:id="@+id/LocateLocationBtn" />
+    	    <Button android:text="Save"
+    	   		android:id="@+id/SaveLocationBtn" />
+    </TableRow>
+</TableLayout>
