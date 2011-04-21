@@ -7,7 +7,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import edu.wisc.cs.cs707.io.StorageHandler;
+import edu.wisc.cs707.io.StorageHandler;
 import edu.wisc.cs707.src.PointOfInterest;
 import edu.wisc.cs707.src.PointsOfInterest;
 

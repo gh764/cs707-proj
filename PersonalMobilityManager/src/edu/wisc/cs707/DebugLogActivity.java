@@ -26,7 +26,7 @@ public class DebugLogActivity extends Activity implements ILogger {
 		((Button)findViewById(R.id.clr_activity_log_btn)).setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View v) {
+			public void onClick(View v) { 
 				log.setText("");
 			}
 		});

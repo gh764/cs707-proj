@@ -7,7 +7,7 @@ import android.location.Criteria;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.TabHost;
-import edu.wisc.cs.cs707.io.StorageHandler;
+import edu.wisc.cs707.io.StorageHandler;
 import edu.wisc.cs707.src.ModelInfo;
 import edu.wisc.cs707.util.LocationController;
 
