@@ -25,16 +25,19 @@ class activity:
 class scheduled_item:
     
     def __init__(self, description, location, start, finish,
-                 prob_cxl, start_dist, finish_dist,
-                 erly_thrshlds, delay_thrshlds):
+                 prob_cxl, start_dist=[1, 0, 0], finish_dist=[1,0,0],
+                 erly_thrshlds=None, delay_thrshlds=None, sdate=None, edate=None):
 
         self.__description = description
         self.__location = location
-        self.__start = self.__strptime(start)
-        self.__finish = self.__strptime(finish)
+        self.__stime = self.__strptime(start)
+        self.__ftime = self.__strptime(finish)
         self.__prob_cxl = prob_cxl
-        self.__start_dist = start_dist
-        self.__finish_dist = finish_dist
+        self.__stime_dist = start_dist
+        self.__ftime_dist = finish_dist
+
+        self.__sdate = sdate;
+        self.__edate = edate
 
         self.__thrshlds = (erly_thrshlds, delay_thrshlds)
 
@@ -55,30 +58,42 @@ class scheduled_item:
         else:
             return timedelta(minutes=t[1])
 
+    def __date_is_out_of_rng(self, dt):
+        
+        if (self.__sdate is  None and self.__edate is  None):
+            return False
+        elif self.__sdate is not None and dt < self.__sdate:
+            return True
+        elif self.__edate is not None and dt > self.__edate:
+            return True
+        else:
+            return False
+
     def generate(self, dt, start=None, finish=None):
         # determine if activity is cancelled.
-        if random.random() < self.__prob_cxl:
+        if random.random() < self.__prob_cxl or \
+            self.__date_is_out_of_rng(dt):
             return None
 
         if start is None:
-            start = self.__start
+            start = self.__stime
         if finish is None:
-            finish = self.__finish
+            finish = self.__ftime
 
         # determine start-time for activity [on_time|early|delayed]
-        flg = random.randint(0, sum(self.__start_dist))
-        if flg <= self.__start_dist[0] and self.__start_dist[0] != 0:
+        flg = random.randint(0, sum(self.__stime_dist))
+        if flg <= self.__stime_dist[0] and self.__stime_dist[0] != 0:
             s = start
-        elif flg <= sum(self.__start_dist[:2]) and self.__start_dist[1] != 0:
+        elif flg <= sum(self.__stime_dist[:2]) and self.__stime_dist[1] != 0:
             s = start - self.__rdelta(self.__thrshlds[0])
         else:
             s = start + self.__rdelta(self.__thrshlds[0])
 
         # determine stop-time for activity [on_time|early|delayed]
-        flg = random.randint(0, sum(self.__finish_dist))
-        if flg <= self.__finish_dist[0] and self.__finish_dist[0] != 0:
+        flg = random.randint(0, sum(self.__ftime_dist))
+        if flg <= self.__ftime_dist[0] and self.__ftime_dist[0] != 0:
             e = finish
-        elif flg <= sum(self.__finish_dist[:2]) and self.__finish_dist[1] != 0:
+        elif flg <= sum(self.__ftime_dist[:2]) and self.__ftime_dist[1] != 0:
             e = finish - self.__rdelta(self.__thrshlds[1])
         else:
             e = finish + self.__rdelta(self.__thrshlds[1])
@@ -88,8 +103,8 @@ class scheduled_item:
 
 class tentative_item:
     def __init__(self, start, finish):
-        self.__start = start
-        self.__finish = finish
+        self.__stime = start
+        self.__ftime = finish
 
 class daily_schedule:
     def __init__(self, weekday):
@@ -119,6 +134,12 @@ class event_generator:
         self.__schedule[weekday] = s
 
     def generate(self, server, uid, start, end):
+
+        u_location = 0 
+        u_start = None
+        u_finish = None
+        
+        previous = None
         d = start
         day = timedelta(hours=24)
         while d < end:
@@ -126,7 +147,21 @@ class event_generator:
                 ds = self.__schedule[d.weekday()]
                 activites = ds.generate(d)
                 for a in activites:
-                    print(a)
                     if a is not None:
+                        # snapshot unspecified activity. 
+                        if u_start is not None:
+                            u_finish = a.start()
+                            print("%d  %s - %s" % (u_location, u_start, u_finish))
+                            server.snapshot(uid, u_location, str(u_start), str(u_finish))
+
+                        print(a)
                         server.snapshot(uid, a.location(), str(a.start()), str(a.finish()))
+                        u_start = None
+                        previous = a
+                    else:
+                        if previous is not None:
+                            u_start = previous.finish()
+                        elif u_start is not None:
+                            u_start = d
+                            
             d = d + day

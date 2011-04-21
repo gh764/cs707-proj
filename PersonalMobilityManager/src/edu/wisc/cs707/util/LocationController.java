@@ -20,7 +20,7 @@ public class LocationController implements LocationListener {
 	
 	public class Snapshot {
 		
-		PointOfInterest poi;
+		PointOfInterest poi = null;
 		long entered = 0;
 		long exited = 0;
 		Activity activity = Activity.Entered;
@@ -76,9 +76,18 @@ public class LocationController implements LocationListener {
 		this.provider = provider;
 	}
 	
+	public Location getCurrentLocation() {
+		if (this.manager != null && this.provider != null) {
+			//this.manager.requestSingleUpdate(this.provider, this, Looper.getMainLooper());
+			this.manager.getLastKnownLocation(this.provider);
+		}
+		
+		return this.location;
+	}
+	
 	public Location getlastKnownLocation() {
 		if (this.manager != null && this.provider != null) {
-			this.onLocationChanged(this.manager.getLastKnownLocation(this.provider));
+			return this.manager.getLastKnownLocation(this.provider);
 		}
 		return this.location;
 	}
@@ -93,6 +102,11 @@ public class LocationController implements LocationListener {
 		PointOfInterest p = this.pointsOfInterest.get(
 				location.getLatitude(), location.getLongitude(), (int)location.getAccuracy());
 		
+		boolean isnull = p == null;
+		if (p == null) {
+			p = PointOfInterest.Unspecified();
+		}
+		
 		if (this.snapshot.poi != null) {
 			if (this.snapshot.poi != p) {
 				this.snapshot.activity = Activity.Exited;
@@ -102,18 +116,15 @@ public class LocationController implements LocationListener {
 				StorageHandler.getInstance(null).save(this.snapshot);
 				
 				// notify listeners of exit.
-				if (this.snapshot.poi != null) {
-					this.update_activity_listeners(this.snapshot.activity, this.snapshot);
-				}
+				this.update_activity_listeners(this.snapshot.activity, this.snapshot);
+				
 				// update to new poi
 				this.snapshot.poi = p;
 				this.snapshot.entered = location.getTime();
 				this.snapshot.activity = Activity.Entered;
 				
 				// notify listeners of new entry.
-				if (this.snapshot.poi != null) {
-					this.update_activity_listeners(this.snapshot.activity, this.snapshot);
-				}
+				this.update_activity_listeners(this.snapshot.activity, this.snapshot); 
 			}
 			
 		} else {
@@ -121,12 +132,12 @@ public class LocationController implements LocationListener {
 			this.snapshot.entered = location.getTime();
 			this.snapshot.activity = Activity.Entered;
 			
-			if (this.snapshot.poi != null) {
-				this.update_activity_listeners(this.snapshot.activity, this.snapshot);
-			}
+			this.update_activity_listeners(this.snapshot.activity, this.snapshot);
 		}
 		
 		this.log(this.location = location);
+		
+		
 	}
 	
 	public Vector<IUserActivityListener> listeners = new Vector<IUserActivityListener>();

@@ -27,6 +27,7 @@ import android.widget.ListView;
 import edu.wisc.cs707.io.StorageHandler;
 import edu.wisc.cs707.src.PointOfInterest;
 import edu.wisc.cs707.src.PointsOfInterest;
+import edu.wisc.cs707.src.XmlRpcClientHandler;
 import edu.wisc.cs707.util.LocationController;
 
 /**
@@ -181,8 +182,8 @@ public class PointsOfInterestActivity extends ListActivity implements OnItemClic
 		return poiDialog;
     }
     
-    private void onClickCurrentLocation(View v) {
-    	Location l = this.locationController.getlastKnownLocation();
+    private void onClickLocateLocation(View v) {
+    	Location l = this.locationController.getCurrentLocation();
 		if (l != null) {
 			
 			bind2source(poiDialog); // capture updates.
@@ -203,6 +204,7 @@ public class PointsOfInterestActivity extends ListActivity implements OnItemClic
 	public void onClickSaveLocation(View v) {
     	
     	PointOfInterest poi = this.selected;
+    	XmlRpcClientHandler handler = XmlRpcClientHandler.getInstance(getApplicationContext());
     	
     	this.bind2source(this.poiDialog);
     	
@@ -211,13 +213,16 @@ public class PointsOfInterestActivity extends ListActivity implements OnItemClic
     		
     		int position = ((ArrayAdapter<PointOfInterest>)this.adapter).getPosition(selected);
     		((ArrayAdapter<PointOfInterest>)this.adapter).remove(selected);
-    		((ArrayAdapter<PointOfInterest>)this.adapter).insert(selected, position); // TODO 
+    		((ArrayAdapter<PointOfInterest>)this.adapter).insert(selected, position); // TODO vicious hack
+    		
+    		handler.updatePoi(this.selected);
     		
     		this.selected = null;
     	} else {
     		poi = new PointOfInterest(this.dlgPoi);
     		((ArrayAdapter<PointOfInterest>)this.adapter).add(poi);
     		
+    		handler.addPoi(this.selected);
     	}    	
     	StorageHandler.getInstance(getApplicationContext()).save(poi);
     	
@@ -236,7 +241,7 @@ public class PointsOfInterestActivity extends ListActivity implements OnItemClic
 			this.onClickClearLocation(v);
 			break;
 		case R.id.LocateLocationBtn:
-			this.onClickCurrentLocation(v);
+			this.onClickLocateLocation(v);
 			break;
 		case R.id.SaveLocationBtn:
 			this.onClickSaveLocation(v);

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.widget.TabHost;
 import edu.wisc.cs707.io.StorageHandler;
 import edu.wisc.cs707.src.ModelInfo;
+import edu.wisc.cs707.src.XmlRpcClientHandler;
 import edu.wisc.cs707.util.LocationController;
 
 public class PersonalMobilityManager extends TabActivity {
@@ -22,6 +23,8 @@ public class PersonalMobilityManager extends TabActivity {
         
         LocationController controller = LocationController.getInstance(getApplicationContext());
         LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        
+        XmlRpcClientHandler.getInstance(getApplicationContext());
         
         ModelInfo m = StorageHandler.getInstance(getApplicationContext()).loadModelInfo();
         
