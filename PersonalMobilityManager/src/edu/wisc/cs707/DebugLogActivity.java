@@ -61,7 +61,7 @@ public class DebugLogActivity extends Activity implements ILogger {
 	}
 	
 	private void log(String text) {
-		this.counter = ++this.counter % MAX_ENTRIES;
+		this.counter = (this.counter + 1) % MAX_ENTRIES;
 		if (this.counter == 0) {
 			this.log.setText("");
 		}

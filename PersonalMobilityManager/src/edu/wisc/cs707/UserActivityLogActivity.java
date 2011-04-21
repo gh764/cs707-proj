@@ -48,7 +48,7 @@ public class UserActivityLogActivity extends Activity implements IUserActivityLi
 		
 		if (poi != null) {
 			
-			this.counter = ++this.counter % MAX_ENTRIES;
+			this.counter = (this.counter + 1) % MAX_ENTRIES;
 			if (this.counter == 0) {
 				this.log.setText("");
 			}
