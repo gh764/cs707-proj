@@ -77,11 +77,11 @@ public class XmlRpcClientHandler implements IUserActivityListener {
 		try {
 			switch (activity) {
 			case Entered:
-				client.call(FX_ENTERED_LOCATION, this.uid, snapshot.getPoi().getId(),
+				client.call(FX_ENTERED_LOCATION, this.uid, snapshot.getPoi().getName(),
 						df.format(new Date(snapshot.getTimeEntered())));
 				break;
 			case Exited:
-				client.call(FX_EXITED_LOCATION, this.uid, snapshot.getPoi().getId(),
+				client.call(FX_EXITED_LOCATION, this.uid, snapshot.getPoi().getName(),
 						df.format(new Date(snapshot.getTimeExited())));
 				break;
 			}

@@ -182,8 +182,8 @@ public class PointsOfInterestActivity extends ListActivity implements OnItemClic
 		return poiDialog;
     }
     
-    private void onClickCurrentLocation(View v) {
-    	Location l = this.locationController.getlastKnownLocation();
+    private void onClickLocateLocation(View v) {
+    	Location l = this.locationController.getCurrentLocation();
 		if (l != null) {
 			
 			bind2source(poiDialog); // capture updates.
@@ -241,7 +241,7 @@ public class PointsOfInterestActivity extends ListActivity implements OnItemClic
 			this.onClickClearLocation(v);
 			break;
 		case R.id.LocateLocationBtn:
-			this.onClickCurrentLocation(v);
+			this.onClickLocateLocation(v);
 			break;
 		case R.id.SaveLocationBtn:
 			this.onClickSaveLocation(v);
