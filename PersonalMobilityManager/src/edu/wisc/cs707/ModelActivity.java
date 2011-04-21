@@ -7,7 +7,7 @@ import java.util.Date;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.EditText;
-import edu.wisc.cs.cs707.io.StorageHandler;
+import edu.wisc.cs707.io.StorageHandler;
 import edu.wisc.cs707.src.ModelInfo;
 
 public class ModelActivity extends Activity {
