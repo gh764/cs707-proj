@@ -1,5 +1,8 @@
 package edu.wisc.cs707;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
@@ -41,10 +44,13 @@ public class DebugLogActivity extends Activity implements ILogger {
 		// TODO Auto-generated method stub
 		
 	}
+	SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd'T'HH:mm:ss");
 	@Override
 	public void log(Location location) {
+		
+		
 		if (location != null) {
-			this.log("LocationUpdate[time:" + location.getTime() +
+			this.log("LocationUpdate[time:" + df.format(new Date(location.getTime())) +
 				"; lat:" + location.getLatitude() + "; long:" + location.getLongitude() + 
 				"; accuracy:" + location.getAccuracy() +
 				"; provider:" + location.getProvider() + "]\n");
