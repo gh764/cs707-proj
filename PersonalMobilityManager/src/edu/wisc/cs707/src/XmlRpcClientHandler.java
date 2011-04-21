@@ -28,6 +28,7 @@ public class XmlRpcClientHandler implements IUserActivityListener {
 	private static final String UUID_FILENAME = "uuid.dat";
 	
 	private static final String FX_ADD_POI = "add_location";
+	private static final String FX_UPD_POI = "upd_location";
 	private static final String FX_REQUEST_UUID = "request_uid";
 	private static final String FX_ENTERED_LOCATION = "enter_location";
 	private static final String FX_EXITED_LOCATION = "exit_location";
@@ -41,6 +42,7 @@ public class XmlRpcClientHandler implements IUserActivityListener {
 		if (this.login(context) == false) {
 			this.uid = this.register(context);
 			
+			// register for updates if logged in.
 			if (this.uid != -1) {
 				LocationController.getInstance(context).requestActivityUpdates(this);
 			}
@@ -89,6 +91,20 @@ public class XmlRpcClientHandler implements IUserActivityListener {
 		try {
 			XMLRPCClient client = new XMLRPCClient(URI.create(SERVER_NAME));
 			client.call(FX_ADD_POI, this.uid, poi.getId(), poi.getName(), null);
+		} catch (XMLRPCException e) {
+		}
+	}
+	
+	public void updatePoi(PointOfInterest poi) {
+		
+		// ensure user is logged in or registed.
+		if (this.uid == -1) {
+			return;
+		}
+		
+		try {
+			XMLRPCClient client = new XMLRPCClient(URI.create(SERVER_NAME));
+			client.call(FX_UPD_POI, this.uid, poi.getId(), poi.getName(), null);
 		} catch (XMLRPCException e) {
 		}
 	}
