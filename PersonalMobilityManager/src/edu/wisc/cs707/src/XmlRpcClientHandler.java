@@ -38,10 +38,14 @@ public class XmlRpcClientHandler implements IUserActivityListener {
 	private static XmlRpcClientHandler instance = null;
 	private int uid = -1;
 	
-	private XmlRpcClientHandler(Context context) {
+	private Context mContext;
+	private XmlRpcClientHandler(Context context) { mContext = context;
 		
 		/* do auto login/registration here. */
-		if (this.login(context) == false) {
+		if (this.login(context)) {
+			this.uid = this.register(context);
+			LocationController.getInstance(context).requestActivityUpdates(this);
+		} else {
 			this.uid = this.register(context);
 			
 			// register for updates if logged in.
@@ -59,6 +63,7 @@ public class XmlRpcClientHandler implements IUserActivityListener {
 		return instance;
 	}
 	
+	private SimpleDateFormat df = new SimpleDateFormat(TIMESTAMP_FMT);
 	@Override
 	public void onUserActivityUpdate(Activity activity, Snapshot snapshot) {
 		
@@ -66,7 +71,8 @@ public class XmlRpcClientHandler implements IUserActivityListener {
 			return;
 		}
 		
-		SimpleDateFormat df = new SimpleDateFormat(TIMESTAMP_FMT);
+		Toast.makeText(mContext, "Location: " + snapshot.getPoi().getName() + ", Activity: " + activity, Toast.LENGTH_LONG).show();
+		
 		XMLRPCClient client = new XMLRPCClient(URI.create(SERVER_NAME));
 		try {
 			switch (activity) {
