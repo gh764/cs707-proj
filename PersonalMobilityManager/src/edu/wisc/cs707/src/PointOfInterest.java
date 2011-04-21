@@ -50,6 +50,11 @@ public class PointOfInterest implements Serializable {
 		this.assign(other);
 	}
 	
+	private static PointOfInterest unspecified = new PointOfInterest(0, "<Unspecified>", 0, 0, 0, 0);
+	public static PointOfInterest Unspecified() {
+		return unspecified;
+	}
+	
 	public boolean contains(double latitude, double longitude) {
 		return this.contains(latitude, longitude, 0);
 	}

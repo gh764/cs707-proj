@@ -39,7 +39,7 @@ public class PointsOfInterest implements  List<PointOfInterest> {
 			}
 		}
 		
-		return p;
+		return null;
 	}
 
 	@Override

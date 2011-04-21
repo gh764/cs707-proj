@@ -94,7 +94,8 @@ public class LocationController implements LocationListener {
 				location.getLatitude(), location.getLongitude(), (int)location.getAccuracy());
 		
 		if (this.snapshot.poi != null) {
-			if (this.snapshot.poi != p) {
+			if (this.snapshot.poi != p &&
+					p != null && this.snapshot.poi != PointOfInterest.Unspecified()) {
 				this.snapshot.activity = Activity.Exited;
 				this.snapshot.exited = location.getTime();
 				
@@ -111,19 +112,18 @@ public class LocationController implements LocationListener {
 				this.snapshot.activity = Activity.Entered;
 				
 				// notify listeners of new entry.
-				if (this.snapshot.poi != null) {
-					this.update_activity_listeners(this.snapshot.activity, this.snapshot);
+				if (this.snapshot.poi == null) {
+					this.snapshot.poi = PointOfInterest.Unspecified();
 				}
+				this.update_activity_listeners(this.snapshot.activity, this.snapshot); 
 			}
 			
 		} else {
-			this.snapshot.poi = p;
+			this.snapshot.poi = p != null ? p : PointOfInterest.Unspecified();
 			this.snapshot.entered = location.getTime();
 			this.snapshot.activity = Activity.Entered;
 			
-			if (this.snapshot.poi != null) {
-				this.update_activity_listeners(this.snapshot.activity, this.snapshot);
-			}
+			this.update_activity_listeners(this.snapshot.activity, this.snapshot);
 		}
 		
 		this.log(this.location = location);
