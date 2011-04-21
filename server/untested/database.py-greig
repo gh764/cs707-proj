@@ -4,7 +4,8 @@ import hashlib
 class database:
     
     def __init__(self, database_name = './database'):
-        self.__connection = sqlite3.connect(database_name)
+        # the extra options to the connect allow you to use native python datetime data types in sqlite
+        self.__connection = sqlite3.connect(database_name, detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES))
         self.__cursor = self.__connection.cursor()
 
     def __del__(self):
@@ -17,6 +18,7 @@ class database:
         self.__connection.commit()
         self.__connection.close()
 
+    #
     def register(self, uid, passwd):
         
         # don't store the unencrypted password to disk
@@ -27,13 +29,10 @@ class database:
             try:
                 self.__cursor.execute('insert into usr(uid, passwd) values(?,?)',
                                       (uid, passwdMd5))
-                self.__cursor.execute('insert into model(uid) values(?)', (uid,))
             except sqlite3.OperationalError:
                 self.__create_user_table()
-                self.__create_model_table()
                 self.__cursor.execute('insert into usr(uid, passwd) values(?,?)',
                                       (uid, passwdMd5))
-                self.__cursor.execute('insert into model(uid) values(?)', (uid,))
             return 0
         except sqlite3.IntegrityError:
             print("registration for %d failed, user already exists" % uid)
@@ -62,9 +61,6 @@ class database:
         else:
             return r[0]
 
-    def get_model(self, uid):
-        self.__cursor.execute('select * from model where uid=?', (uid,))
-        return self.__cursor.fetchall()
 
     def add_location(self, uid, name, longitude, latitude, radius, description=None, altitude=0):
         try:

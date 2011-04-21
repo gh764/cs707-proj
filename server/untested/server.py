@@ -1,4 +1,5 @@
-import datetime, socket, random, array
+import datetime
+from datetime import datetime
 from database import database
 from xmlrpc.server import SimpleXMLRPCServer
 
@@ -12,32 +13,31 @@ class DatabaseHandler:
         del self.__database
 
     def register(self, uid, passwd):
-        print('%s request::=[type=register;args::=[uid=%d]]' % (datetime.datetime.now() ,uid))
+        print '%s request::=[type=register;args::=[uid=%d]]' % (datetime.now() ,uid)
         return self.__database.register(uid, passwd)
 
     def login(self, uid, passwd):
-        print('%s request::=[type=login;args::=[uid=%d]]' % (datetime.datetime.now() ,uid))
+        print '%s request::=[type=login;args::=[uid=%d]]' % (datetime.now() ,uid)
         return self.__database.login(uid, passwd)
 
-    def add_location(self, uid, name, longitude, latitude, radius, description=None, altitude=0):
-        print('%s request::=[type=add_poi;args::=[uid=%d;name=%s,long=%d,lat=%d,rad=%d,alt=%d]]' %
-              (datetime.datetime.now(), uid, name, longitude, latitude, radius, altitude))
-        return self.__database.add_location(uid, name, longitude, latitude, radius, altitude)
+    def add_location(self, uid, name, description):
+        print '%s request::=[type=add_poi;args::=[uid=%d;name=%s,desc=%s]]' % (datetime.now(), uid, name, description)
+        return self.__database.add_location(uid, name, description)
 
-    def del_location(self, uid, pid):
-        return 0
+    def del_location(self, uid, location_name):
+        print
+        return self.__database.del_location(uid, location_name)
 
     def get_locations(self, uid):
-        print('%s request::=[type=get_poi;args::=[uid=%d]]' % (datetime.datetime.now() ,uid))
+        print '%s request::=[type=get_poi;args::=[uid=%d]]' % (datetime.now() ,uid)
         return self.__database.get_locations(uid)
 
     def get_model(self, uid):
-        print('%s request::=[type=get_model;args::=[uid=%d]]' % (datetime.datetime.now() ,uid))
+        print '%s request::=[type=get_model;args::=[uid=%d]]' % (datetime.now() ,uid)
         return self.__database.get_model(uid)
 
     def snapshot(self, uid, location, start, end):
-        print('%s request::=[type=snapshot;args::=[uid=%d,location=%d,s=%s,e=%s]]' %
-              (datetime.datetime.now(), uid, location, start, end))
+        print '%s request::=[type=snapshot;args::=[uid=%d,location=%d,s=%s,e=%s]]' % (datetime.now(), uid, location, start, end)
         return self.__database.snapshot(uid, location, start, end)
 
 def main():
