@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.xmlrpc.android.XMLRPCClient;
@@ -26,6 +27,7 @@ public class XmlRpcClientHandler implements IUserActivityListener {
 	
 	private static final String SERVER_NAME = "http://10.0.2.2:7500";
 	private static final String UUID_FILENAME = "uuid.dat";
+	private static final String TIMESTAMP_FMT = "yyyyMMdd'T'HH:mm:ss";
 	
 	private static final String FX_ADD_POI = "add_location";
 	private static final String FX_UPD_POI = "upd_location";
@@ -64,16 +66,17 @@ public class XmlRpcClientHandler implements IUserActivityListener {
 			return;
 		}
 		
+		SimpleDateFormat df = new SimpleDateFormat(TIMESTAMP_FMT);
 		XMLRPCClient client = new XMLRPCClient(URI.create(SERVER_NAME));
 		try {
 			switch (activity) {
 			case Entered:
 				client.call(FX_ENTERED_LOCATION, this.uid, snapshot.getPoi().getId(),
-						snapshot.getTimeEntered());
+						df.format(new Date(snapshot.getTimeEntered())));
 				break;
 			case Exited:
 				client.call(FX_EXITED_LOCATION, this.uid, snapshot.getPoi().getId(),
-						snapshot.getTimeExited());
+						df.format(new Date(snapshot.getTimeExited())));
 				break;
 			}
 		} catch (XMLRPCException e) {
