@@ -1,4 +1,4 @@
-package edu.wisc.cs707.src;
+package edu.wisc.cs707.net;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -18,6 +18,7 @@ import org.xmlrpc.android.XMLRPCException;
 
 import android.content.Context;
 import android.widget.Toast;
+import edu.wisc.cs707.src.PointOfInterest;
 import edu.wisc.cs707.util.IUserActivityListener;
 import edu.wisc.cs707.util.LocationController;
 import edu.wisc.cs707.util.LocationController.Activity;
@@ -25,7 +26,7 @@ import edu.wisc.cs707.util.LocationController.Snapshot;
 
 public class XmlRpcClientHandler implements IUserActivityListener {
 	
-	private static final String SERVER_NAME = "http://10.0.2.2:7500";
+	private static final String SERVER_NAME = "http://localhost:7500";
 	private static final String UUID_FILENAME = "uuid.dat";
 	private static final String TIMESTAMP_FMT = "yyyyMMdd'T'HH:mm:ss";
 	

@@ -31,6 +31,7 @@ public class DebugLogActivity extends Activity implements ILogger {
 			@Override
 			public void onClick(View v) { 
 				log.setText("");
+				counter = 0;
 			}
 		});
 		
@@ -63,7 +64,6 @@ public class DebugLogActivity extends Activity implements ILogger {
 	@Override
 	public void log(Object o) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	private void log(String text) {

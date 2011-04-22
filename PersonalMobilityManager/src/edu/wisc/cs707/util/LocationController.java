@@ -47,6 +47,9 @@ public class LocationController implements LocationListener {
 		}
 	}
 	
+	private static int DELTA_THRESHOLD = 15; // 15 m;
+	private static int ACCURACY_THRESHOLD = 50; // 50 m;
+	
 	private static LocationController instance = null;
 
 	private PointsOfInterest pointsOfInterest;
@@ -79,6 +82,7 @@ public class LocationController implements LocationListener {
 	public Location getCurrentLocation() {
 		if (this.manager != null && this.provider != null) {
 			//this.manager.requestSingleUpdate(this.provider, this, Looper.getMainLooper());
+			//this.manager.req
 			this.manager.getLastKnownLocation(this.provider);
 		}
 		
@@ -96,13 +100,48 @@ public class LocationController implements LocationListener {
 		return this.snapshot;
 	}
 	
+	/** Checks whether two providers are the same */
+	private boolean isSameProvider(String provider1, String provider2) {    
+		if (provider1 == null) {      
+			return provider2 == null;    
+		}    
+		return provider1.equals(provider2);
+	}
+	
+	/** 
+	 * adopted from http://developer.android.com/guide/topics/location/obtaining-user-location.html
+	 * Determines whether one Location reading is better than the current Location fix  
+	 * @param location  The new Location that you want to evaluate  
+	 * @param currentBestLocation  The current Location fix, 
+	 * to which you want to compare the new one  */
+	private boolean isBetterLocation(Location location, Location currentBestLocation) {    
+		
+		// A new location is always better than no location
+		if (currentBestLocation == null) {        
+			return true;    
+		}       
+		
+		// Check whether the new location fix is more or less accurate    
+		int delta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());    
+		
+		// Determine location quality    
+		if (delta <= 0) {        
+			return true;        
+		} else if (delta < DELTA_THRESHOLD && location.getAccuracy() < ACCURACY_THRESHOLD && 
+				this.isSameProvider(location.getProvider(), 
+						currentBestLocation.getProvider())) {        
+			return true;    
+		}    
+		
+		return false;
+	}
+	
 	@Override
 	public void onLocationChanged(Location location) {
 		
 		PointOfInterest p = this.pointsOfInterest.get(
 				location.getLatitude(), location.getLongitude(), (int)location.getAccuracy());
 		
-		boolean isnull = p == null;
 		if (p == null) {
 			p = PointOfInterest.Unspecified();
 		}
@@ -135,7 +174,9 @@ public class LocationController implements LocationListener {
 			this.update_activity_listeners(this.snapshot.activity, this.snapshot);
 		}
 		
-		this.log(this.location = location);
+		if (this.isBetterLocation(location, this.location)) {
+			this.log(this.location = location);
+		}
 		
 		
 	}

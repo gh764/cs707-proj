@@ -25,9 +25,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import edu.wisc.cs707.io.StorageHandler;
+import edu.wisc.cs707.net.XmlRpcClientHandler;
 import edu.wisc.cs707.src.PointOfInterest;
 import edu.wisc.cs707.src.PointsOfInterest;
-import edu.wisc.cs707.src.XmlRpcClientHandler;
 import edu.wisc.cs707.util.LocationController;
 
 /**

@@ -8,8 +8,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.TabHost;
 import edu.wisc.cs707.io.StorageHandler;
+import edu.wisc.cs707.net.XmlRpcClientHandler;
 import edu.wisc.cs707.src.ModelInfo;
-import edu.wisc.cs707.src.XmlRpcClientHandler;
 import edu.wisc.cs707.util.LocationController;
 
 public class PersonalMobilityManager extends TabActivity {
