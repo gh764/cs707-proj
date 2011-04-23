@@ -3,6 +3,8 @@ import hashlib
 from datetime import datetime
 from datetime import timedelta
 import markov
+from random import randint
+import sys
 
 class database:
     
@@ -20,58 +22,29 @@ class database:
         self.__connection.commit()
         self.__connection.close()
 
-    def register(self, uname, passwd):
-        """Register:
-        uname: <user name>
-        passwd: <clear text password>
-
-        Registers the specified user with the database"""
-
-        # don't store the unencrypted password to disk
-        # assume this is called via an https connection
-        passwdMd5 = hashlib.md5(passwd).hexdigest()
-
-        try:
-            try:
-                self.__cursor.execute('insert into usr(uname, passwdMD5) values(?,?)',
-                                      (uname, passwdMd5))
-            except sqlite3.OperationalError:
-                self.__create_user_table()
-                self.__cursor.execute('insert into usr(uname, passwdMD5) values(?,?)',
-                                      (uname, passwdMd5))
-            return 0
-        except sqlite3.IntegrityError:
-            print "Register for %s failed, user already exists" % uname
-            return -1
-
-    def login(self, uname, passwd):
-        """Login:
-        uname: <user name>
-        passwd: <clear text password>
-
-        Note that the md5 hash is stored in the database, not the password.  
+    def request_uid(self):
+        """request user id:
+        get a random number from 0 to INT MAX
+        that is unique
         """
 
-        passwdMd5 = hashlib.md5(passwd).hexdigest()
+        uid_found = False
+        while not uid_found:
 
-        try:
+            uid_guess = randint(1,sys.maxint-1)
+
             try:
-                self.__cursor.execute('select uid from usr where uname=? and passwdMd5=?',
-                                          (uname, passwdMd5))
+                self.__cursor.execute('insert into usr(uid) values(?)', (uid_guess,))
+                uid_found=True
             except sqlite3.OperationalError:
-                # usr table does not exist, create it
-                # if the table doesn't exist the user isn't going to be there
                 self.__create_user_table()
-                return -1
-        except sqlite3.IntegrityError:
-            print "password or username not correct for uname: %s" % uname
-            return -1
+                self.__cursor.execute('insert into usr(uid) values(?)', (uid_guess,))
+                uid_found=True
+            except sqlite3.IntegrityError:
+                # this uid exists already
+                continue
 
-        r=self.__cursor.fetchone()
-        if r == None:
-            return -1
-        else:
-            return r[0]
+        return uid_guess
 
     def del_location(self, uid, location_name):
         
@@ -327,9 +300,7 @@ class database:
     def __create_user_table(self):
         # create usr table. 
         self.__cursor.execute("""create table if not exists [usr] (
-                  [uid]    [integer]       primary key ,
-                  [uname]  [varchar](16)   not null unique,
-                  [passwdMD5] [varchar](32)   not null )""")
+                  [uid]    [integer]       primary key unique)""")
         
     def __create_location_table(self):
         self.__cursor.execute("""create table if not exists [location] (

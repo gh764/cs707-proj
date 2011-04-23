@@ -12,11 +12,8 @@ class DatabaseHandler:
     def close(self):
         del self.__database
 
-    def register(self, uname, passwd):
-        return self.__database.register(uname, passwd)
-
-    def login(self, uname, passwd):
-        return self.__database.login(uname, passwd)
+    def request_uid(self):
+        return self.__database.request_uid()
 
     def add_location(self, uid, name, description):
         return self.__database.add_location(uid, name, description)

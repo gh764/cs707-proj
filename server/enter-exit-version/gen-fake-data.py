@@ -301,13 +301,12 @@ class fake_location_gen:
     def generate(self):
         s = xmlrpclib.ServerProxy("http://localhost:7500")
         
-        if s.register("mnewcomb", "junk")==-1:
-            print "user mnewcomb already exists"
-        
-        uid = s.login("mnewcomb", "junk")
+        uid = s.request_uid()
         if uid is -1:
             print "wrong username and/or password for 'mnewcomb'"
             return
+        
+        print "UID: %d" % uid
 
         # add work/home/other/class
         s.add_location(uid, "work", "matts work")
@@ -328,6 +327,7 @@ class fake_location_gen:
 
             current_dt += timedelta(hours=24)
 
+        print "fake data uid: %d" % uid
 
 if __name__=="__main__":
     d1 = datetime(2011, 1, 18, 0,0,0)
